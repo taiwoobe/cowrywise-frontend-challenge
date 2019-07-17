@@ -1,60 +1,136 @@
 <template>
-  <div class="hello">
-    <h1>{{ msg }}</h1>
-    <p>
-      For a guide and recipes on how to configure / customize this project,<br>
-      check out the
-      <a href="https://cli.vuejs.org" target="_blank" rel="noopener">vue-cli documentation</a>.
-    </p>
-    <h3>Installed CLI Plugins</h3>
-    <ul>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel" target="_blank" rel="noopener">babel</a></li>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-eslint" target="_blank" rel="noopener">eslint</a></li>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-unit-jest" target="_blank" rel="noopener">unit-jest</a></li>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-e2e-cypress" target="_blank" rel="noopener">e2e-cypress</a></li>
-    </ul>
-    <h3>Essential Links</h3>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank" rel="noopener">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank" rel="noopener">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank" rel="noopener">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank" rel="noopener">Twitter</a></li>
-      <li><a href="https://news.vuejs.org" target="_blank" rel="noopener">News</a></li>
-    </ul>
-    <h3>Ecosystem</h3>
-    <ul>
-      <li><a href="https://router.vuejs.org" target="_blank" rel="noopener">vue-router</a></li>
-      <li><a href="https://vuex.vuejs.org" target="_blank" rel="noopener">vuex</a></li>
-      <li><a href="https://github.com/vuejs/vue-devtools#vue-devtools" target="_blank" rel="noopener">vue-devtools</a></li>
-      <li><a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
-    </ul>
+  <div class="container">
+    <div class="search">
+      <div class="search-field">
+        <input type="text" class="form-control" placeholder="Search for Photo">
+      </div>
+    </div>
+    <div class="wrapper"> 
+      <div class="masonry">
+        <div class="masonry-item" v-for="photo in photos" :key="photo.id">
+          <img :src="photo.urls.small" class="img-responsive" :alt="photo.alt_description"/>
+          <div class="photo-details">
+            <h3>{{ photo.user.name }}</h3>
+            <p>{{ photo.user.location }}</p>
+          </div>
+        </div>
+      </div>
+      <ul v-if="errors && errors.length">
+        <li v-for="error of errors" :key="error.id">
+          {{error.message}}
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
 <script>
-export default {
+  import { HTTP, unsplash } from '../config/api'
+  export default {
   name: 'HelloWorld',
-  props: {
-    msg: String
+  data() {
+    return {
+      photos: [],
+      errors: [],
+      defaultQuery: 'african',
+      resultPerPage: 8
+    }
+  },
+  created() {
+    this.getPhotos();
+  },
+  methods: {
+    getPhotos() {
+      let appId = unsplash._applicationId;
+      HTTP.get(`search/photos/?page=1&per_page=${this.resultPerPage}&query=${this.defaultQuery}&client_id=${appId}`).then(response => {
+        this.photos = response.data.results;
+      })
+      .catch(e => {
+        this.errors.push(e)
+      });
+    }
   }
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-h3 {
-  margin: 40px 0 0;
+.search {
+  min-height: 200px;
+  background: #dde2e9;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  .search-field {
+    padding: 30px 100px;
+    margin: 0 auto;
+    width: 100%;
+    max-width: 992px;
+    input {
+      width: 100%;
+    }
+  }
 }
-ul {
-  list-style-type: none;
-  padding: 0;
+.wrapper {
+  margin: 0 auto;
+  padding: 0 1.5em;
+  max-width: 1200px;
+  position: relative;
+  top: -40px;
+  .masonry {
+    column-gap: 30px;
+    column-fill: initial;
+    .masonry-item {
+      margin-bottom: 30px;
+      display: inline-block;
+      vertical-align: top;
+      position: relative;
+      cursor: pointer;
+      &:after {
+        position: absolute;
+        content: '';
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: 8px;
+        background: linear-gradient(180deg, transparent 45%, rgb(0, 0, 0) 100%);
+        opacity: 1;
+      }
+      &:hover:after {
+        background: linear-gradient(180deg, rgba(0,0,0, 0.5) 50%, rgb(0, 0, 0) 100%);
+      }
+      .photo-details {
+        color: rgba(255,255,255,0.9);
+        position: absolute;
+        left: 0;
+        right: 0;
+        padding: 0 30px;
+        bottom: 40px;
+        z-index: 1;
+        p, h3 {
+          margin: 0;
+        }
+        h3 {
+          margin: 5px 0;
+        }
+      }
+      img {
+        border-radius: 8px;
+      }
+    }
+  }
 }
-li {
-  display: inline-block;
-  margin: 0 10px;
+
+// MEDIA QUERIES //
+@media only screen and (max-width: 1023px) and (min-width: 768px){
+  .masonry {
+    column-count: 2;
+  }
 }
-a {
-  color: #42b983;
+@media only screen and (min-width: 1024px){
+  .masonry {
+    column-count: 3;
+  }
 }
 </style>
