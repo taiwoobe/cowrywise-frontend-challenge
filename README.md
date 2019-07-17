@@ -2,7 +2,6 @@
 
 Cowrywise Frontend Developer Challenge - Building a mini unsplash clone using VueJs and the Unsplash API
 
-
 ## Project setup
 ```
 yarn install
