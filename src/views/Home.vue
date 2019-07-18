@@ -1,17 +1,19 @@
 <template>
   <div class="home">
-    <HelloWorld/>
+    <photoList></photoList>
+    <footer-component></footer-component>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
+import photoList from '@/components/photo-list.vue'
+import footerComponent from '@/components/footer.vue'
 
 export default {
   name: 'home',
   components: {
-    HelloWorld
+    photoList, footerComponent
   }
 }
 </script>

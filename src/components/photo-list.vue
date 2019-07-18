@@ -1,16 +1,13 @@
 <template>
-  <div class="container">
-    <div class="search">
-      <div class="search-field">
-        <input type="text" class="form-control" placeholder="Search for Photo">
-      </div>
-    </div>
+  <div class="">
+    <search-component v-model="searchQuery"></search-component>
     <div class="wrapper"> 
       <div class="masonry">
-        <div class="masonry-item" v-for="photo in photos" :key="photo.id">
+        <div class="masonry-item" v-for="photo in photos" :key="photo.id" v-on:click="openSelectedPhoto(photo)" data-toggle="modal" data-target=".bd-example-modal-lg">
           <img :src="photo.urls.small" class="img-responsive" :alt="photo.alt_description"/>
+           <font-awesome-icon icon="download" size="md" class="download-img"/>
           <div class="photo-details">
-            <h3>{{ photo.user.name }}</h3>
+            <h4>{{ photo.user.name }}</h4>
             <p>{{ photo.user.location }}</p>
           </div>
         </div>
@@ -21,19 +18,27 @@
         </li>
       </ul>
     </div>
+    <photoModal :singlePhoto="selectedPhoto"></photoModal>
+
   </div>
 </template>
 
 <script>
   import { HTTP, unsplash } from '../config/api'
+  import searchComponent from '@/components/search.vue'
+  import photoModal from '@/components/photo-modal.vue'
+
   export default {
-  name: 'HelloWorld',
+  name: 'photoList',
+  components: {searchComponent, photoModal},
   data() {
     return {
       photos: [],
       errors: [],
       defaultQuery: 'african',
-      resultPerPage: 8
+      resultPerPage: 8,
+      searchQuery: '',
+      selectedPhoto: {}
     }
   },
   created() {
@@ -48,6 +53,28 @@
       .catch(e => {
         this.errors.push(e)
       });
+    },
+    filteredPhotos() {
+      let appId = unsplash._applicationId;
+      let query = this.searchQuery.toLowerCase();
+      if (query.length == '') {
+        this.getPhotos();
+      } else {
+        HTTP.get(`search/photos/?page=1&per_page=${this.resultPerPage}&query=${query}&client_id=${appId}`).then(response => {
+          this.photos = response.data.results
+        })
+        .catch(e => {
+          console.log(e)
+        })
+      }
+    },
+    openSelectedPhoto(photo) {
+      this.selectedPhoto = photo;
+    }
+  },
+  watch: {
+    searchQuery: function() {
+      this.filteredPhotos();
     }
   }
 }
@@ -55,68 +82,65 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-.search {
-  min-height: 200px;
-  background: #dde2e9;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  .search-field {
-    padding: 30px 100px;
-    margin: 0 auto;
-    width: 100%;
-    max-width: 992px;
-    input {
-      width: 100%;
-    }
-  }
-}
 .wrapper {
   margin: 0 auto;
+  max-width: 992px;
   padding: 0 1.5em;
-  max-width: 1200px;
   position: relative;
-  top: -40px;
+  top: -50px;
   .masonry {
-    column-gap: 30px;
     column-fill: initial;
+    column-gap: 25px;
     .masonry-item {
-      margin-bottom: 30px;
-      display: inline-block;
-      vertical-align: top;
-      position: relative;
+      border-radius: 8px;
       cursor: pointer;
+      display: inline-block;
+      margin-bottom: 30px;
+      overflow: hidden;
+      position: relative;
+      vertical-align: top;
+      width: 100%;
       &:after {
-        position: absolute;
-        content: '';
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
         border-radius: 8px;
         background: linear-gradient(180deg, transparent 45%, rgb(0, 0, 0) 100%);
+        content: '';
+        height: 100%;
+        left: 0;
         opacity: 1;
+        position: absolute;
+        top: 0;
+        width: 100%;
+      }
+      &:hover {
+        .download-img {
+          color: #fff;
+        }
       }
       &:hover:after {
         background: linear-gradient(180deg, rgba(0,0,0, 0.5) 50%, rgb(0, 0, 0) 100%);
       }
-      .photo-details {
-        color: rgba(255,255,255,0.9);
+      .download-img {
+        color: #000;
+        cursor: pointer;
         position: absolute;
-        left: 0;
-        right: 0;
-        padding: 0 30px;
+        right: 25px;
+        top: 25px;
+        z-index: 2;
+      }
+      .photo-details {
         bottom: 40px;
+        color: rgba(255,255,255,0.9);
+        left: 0;
+        padding: 0 25px;
+        position: absolute;
+        right: 0;
         z-index: 1;
-        p, h3 {
+        p, h4 {
           margin: 0;
         }
-        h3 {
+        h4 {
           margin: 5px 0;
         }
-      }
-      img {
-        border-radius: 8px;
       }
     }
   }
