@@ -34,7 +34,7 @@ export default {
 
 <style lang="scss" scoped>
 .fade {
-    transition: opacity .5s linear;
+    transition: opacity .5s ease-in-out;
 }
 .modal-content {
     background-color: transparent;
@@ -44,6 +44,9 @@ export default {
         .close {
             color: #fff;
             opacity: 0.8;
+        }
+        &:focus{
+            outline: none;
         }
     }
     .modal-body {

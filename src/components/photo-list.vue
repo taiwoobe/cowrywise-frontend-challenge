@@ -1,10 +1,11 @@
 <template>
-  <div class="">
+  <div>
     <search-component v-model="searchQuery"></search-component>
     <div class="wrapper"> 
       <div class="masonry" v-if="photos">
+        <transition-group name="fade">
           <div class="masonry-item" v-for="photo in photos" :key="photo.id">
-            <img :src="photo.urls.small" class="img-responsive" :alt="photo.alt_description" v-on:click="openSelectedPhoto(photo)" data-toggle="modal" data-target=".bd-example-modal-lg"/>
+            <img :src="photo.urls.small" class="img-responsive" title="`View Photo by ${photo.user.name}`" :alt="photo.alt_description" v-on:click="openSelectedPhoto(photo)" data-toggle="modal" data-target=".bd-example-modal-lg"/>
               <a :href="download_url" download rel="nofollow" v-on:click="downloadPhoto(photo)">
                 <font-awesome-icon icon="download" size="1x" class="download-img"/>
               </a>
@@ -13,6 +14,7 @@
               <p>{{ photo.user.location }}</p>
             </div>
           </div>
+        </transition-group>
       </div>
       <ul v-if="errors && errors.length">
         <li v-for="error of errors" :key="error.id">
@@ -21,7 +23,6 @@
       </ul>
     </div>
     <photoModal :singlePhoto="selectedPhoto"></photoModal>
-
   </div>
 </template>
 
@@ -72,7 +73,7 @@
         })
       }
     },
-    openSelectedPhoto: function(photo) {
+    openSelectedPhoto(photo) {
       this.selectedPhoto = photo;
     },
     downloadPhoto(photo) {
@@ -89,6 +90,14 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
+.fade-enter-active {
+  transition: opacity 0.5s ease-in-out;
+  transition-delay: 0.1s;
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+}
+
 .wrapper {
   margin: 0 auto;
   max-width: 992px;
