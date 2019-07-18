@@ -44,6 +44,7 @@ export default {
         .close {
             color: #fff;
             opacity: 0.8;
+            outline: none;
         }
         &:focus{
             outline: none;

@@ -1,8 +1,13 @@
 <template>
     <div class="search">
-        <div class="search-field">
+        <div class="search-field" v-if="searchResult">
             <font-awesome-icon icon="search" size="xs" color="rgba(65,81,109,0.8)"/>
             <input type="text" class="form-control" placeholder="Search for Photo" v-model="searchQuery">
+        </div>
+        <div class="search-result" v-else>
+            <transition name="fade">
+                <h3> {{ searchMessage }}</h3>
+            </transition>
         </div>
     </div>
 </template>
@@ -10,9 +15,7 @@
 <script>
     export default {
         name: 'searchComponent',
-        props: {
-            value: ''
-        },
+        props: ["searchResult", "searchMessage"],
         data() {
             return {
                 searchQuery: ''
@@ -27,6 +30,12 @@
 </script>
 
 <style lang="scss" scoped>
+.fade-enter-active {
+  transition: opacity 0.1s ease-in-out;
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+}
 .search {
   min-height: 250px;
   background: #dde2e9;
@@ -55,6 +64,14 @@
         box-shadow: 0 0 0 0.3px rgb(65,81,109);
       }
     }
+  }
+  .search-result {
+      display: block;
+      padding: 30px;
+      margin: 0 auto;
+      text-align: left;
+      max-width: 1200px;
+      width: 100%;
   }
 }
 </style>
