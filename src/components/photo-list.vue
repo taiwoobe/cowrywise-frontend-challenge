@@ -2,15 +2,17 @@
   <div class="">
     <search-component v-model="searchQuery"></search-component>
     <div class="wrapper"> 
-      <div class="masonry">
-        <div class="masonry-item" v-for="photo in photos" :key="photo.id" v-on:click="openSelectedPhoto(photo)" data-toggle="modal" data-target=".bd-example-modal-lg">
-          <img :src="photo.urls.small" class="img-responsive" :alt="photo.alt_description"/>
-           <font-awesome-icon icon="download" size="md" class="download-img"/>
-          <div class="photo-details">
-            <h4>{{ photo.user.name }}</h4>
-            <p>{{ photo.user.location }}</p>
+      <div class="masonry" v-if="photos">
+          <div class="masonry-item" v-for="photo in photos" :key="photo.id">
+            <img :src="photo.urls.small" class="img-responsive" :alt="photo.alt_description" v-on:click="openSelectedPhoto(photo)" data-toggle="modal" data-target=".bd-example-modal-lg"/>
+              <a :href="download_url" download rel="nofollow" v-on:click="downloadPhoto(photo)">
+                <font-awesome-icon icon="download" size="1x" class="download-img"/>
+              </a>
+            <div class="photo-details">
+              <h4>{{ photo.user.name }}</h4>
+              <p>{{ photo.user.location }}</p>
+            </div>
           </div>
-        </div>
       </div>
       <ul v-if="errors && errors.length">
         <li v-for="error of errors" :key="error.id">
@@ -27,6 +29,7 @@
   import { HTTP, unsplash } from '../config/api'
   import searchComponent from '@/components/search.vue'
   import photoModal from '@/components/photo-modal.vue'
+  import debounce from '../util/debounce'
 
   export default {
   name: 'photoList',
@@ -38,7 +41,8 @@
       defaultQuery: 'african',
       resultPerPage: 8,
       searchQuery: '',
-      selectedPhoto: {}
+      selectedPhoto: {},
+      download_url: ''
     }
   },
   created() {
@@ -68,14 +72,17 @@
         })
       }
     },
-    openSelectedPhoto(photo) {
+    openSelectedPhoto: function(photo) {
       this.selectedPhoto = photo;
+    },
+    downloadPhoto(photo) {
+      this.download_url = `${photo.links.download}?force=true`;
     }
   },
   watch: {
-    searchQuery: function() {
+    searchQuery: debounce(function() {
       this.filteredPhotos();
-    }
+    }, 1000)
   }
 }
 </script>
@@ -108,8 +115,13 @@
         left: 0;
         opacity: 1;
         position: absolute;
+        pointer-events: none;
         top: 0;
         width: 100%;
+        z-index: 1;
+      }
+      img {
+        z-index: 2;
       }
       &:hover {
         .download-img {
@@ -118,6 +130,7 @@
       }
       &:hover:after {
         background: linear-gradient(180deg, rgba(0,0,0, 0.5) 50%, rgb(0, 0, 0) 100%);
+        z-index: 1;
       }
       .download-img {
         color: #000;
@@ -134,7 +147,7 @@
         padding: 0 25px;
         position: absolute;
         right: 0;
-        z-index: 1;
+        z-index: 3;
         p, h4 {
           margin: 0;
         }

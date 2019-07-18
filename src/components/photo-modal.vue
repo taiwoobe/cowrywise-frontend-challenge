@@ -1,18 +1,20 @@
 <template>
-    <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-            <div class="modal-body">
-               <img :src="singlePhoto.urls.full" srcset="" class="img-responsive" :alt="singlePhoto.alt_description"/>
+    <div>
+        <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
             </div>
-                <div class="modal-footer">
-                    <h4>{{ singlePhoto.user.name }}</h4>
-                    <p>{{ singlePhoto.user.location }}</p>
+                <div class="modal-body">
+                <img :src="singlePhoto.urls.full" class="img-responsive" :alt="singlePhoto.alt_description"/>
+                </div>
+                    <div class="modal-footer">
+                        <h4>{{ singlePhoto.user.name }}</h4>
+                        <p>{{ singlePhoto.user.location }}</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -67,5 +69,17 @@ export default {
             margin: 0;
         }
     }
+}
+@media only screen and (min-width: 768px){
+  .modal-content {
+      .modal-header {
+          .close {
+            margin: 0;
+            position: fixed;
+            top: 10px;
+            right: 30px;
+        }
+      }
+  }
 }
 </style>
