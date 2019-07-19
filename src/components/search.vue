@@ -1,37 +1,38 @@
 <template>
-    <div class="search">
-        <div class="search-field" v-if="searchResult">
-            <font-awesome-icon icon="search" size="xs" color="rgba(65,81,109,0.8)"/>
-            <input type="text" class="form-control" placeholder="Search for Photo" v-model="searchQuery">
-        </div>
-        <div class="search-result" v-else>
-            <transition name="fade">
-                <h3> {{ searchMessage }}</h3>
-            </transition>
-        </div>
+  <div class="search">
+    <div class="search-field" v-if="searchText == ''">
+      <font-awesome-icon icon="search" size="xs" color="rgba(65,81,109,0.8)"/>
+      <input type="text" class="form-control" placeholder="Search for Photo" v-model="searchQuery">
     </div>
+    <div class="search-result" v-else> 
+      <transition name="fade">
+        <h3> {{ searchText }} </h3>
+      </transition>
+    </div>
+  </div>
 </template>
 
 <script>
-    export default {
-        name: 'searchComponent',
-        props: ["searchResult", "searchMessage"],
-        data() {
-            return {
-                searchQuery: ''
-            }
-        },
-        watch: {
-            searchQuery: function(value) {
-                this.$emit('input', value);
-            }
-        }
+  import { mapState } from 'vuex'
+  export default {
+    name: 'searchComponent',
+    props: [ "searchText", "searchResult"],
+    data() {
+      return {
+        searchQuery: '',
+      }
+    },
+    watch: {
+      searchQuery: function(value) {
+        this.$emit('input', value);
+      }
     }
+  }
 </script>
 
 <style lang="scss" scoped>
 .fade-enter-active {
-  transition: opacity 0.1s ease-in-out;
+  transition: opacity 0.3s ease-in-out;
 }
 .fade-enter, .fade-leave-to {
   opacity: 0;
