@@ -2,7 +2,6 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
 import { HTTP, unsplash } from '../config/api'
-import { STATUS_CODES } from 'http';
 
 Vue.use(Vuex, axios)
 
@@ -14,7 +13,7 @@ export const store = new Vuex.Store({
         searchString: '',
         loading: true,
         noResult: false,
-        error: ''
+        errors: ''
     },
     actions: {
         getPhotos({ commit }) {
@@ -22,17 +21,19 @@ export const store = new Vuex.Store({
             HTTP.get(`search/photos/?page=1&per_page=${this.state.resultPerPage}&query=${this.state.defaultQuery}&client_id=${appId}`)
             .then(response => {
                 commit('GET_LOADING_STATUS', false);
-                commit('SET_PHOTOS', response.data.results);
+                let sortedPhotos = response.data.results;
+                commit('SET_PHOTOS', sortedPhotos.sort((a, b) => a.created_at < b.created_at ? 1 : -1));
             })
             .catch(e => {
-                console.log(e.message);
-                this.errors.push(e);
+                commit('GET_LOADING_STATUS', false);
+                console.log(e);
+                commit('GET_ERROR_MESSAGE', e.message);
             });
         },
         searchedPhotos({commit, dispatch}, payload) {
             let appId = unsplash._applicationId;
             let query = payload;
-            if (query.length == '') {
+            if (query.length <= 0) {
                 dispatch('getPhotos');
             } else {
                 this.state.searchString = `"${query}"`;
@@ -50,8 +51,8 @@ export const store = new Vuex.Store({
                     commit('GET_LOADING_STATUS', false);
                 })
                 .catch(e => {
-                    console.log(e.message);
-                    this.errors.push(e);
+                    console.log(e);
+                    commit('GET_ERROR_MESSAGE', e.message);
                 })
             }
         }
@@ -71,7 +72,11 @@ export const store = new Vuex.Store({
         },
         GET_RESULT_STATUS: (state, noResult) => {
             state.noResult = noResult;
+        },
+        GET_ERROR_MESSAGE: (state, errors) => {
+            state.errors = errors;
         }
+        
     },
     getters: {
         SEARCH_STRING: state => {
@@ -82,6 +87,9 @@ export const store = new Vuex.Store({
         },
         NO_RESULT: state => {
             return state.noResult;
+        },
+        ERRORS: state => {
+            return state.errors;
         }
     }
 })

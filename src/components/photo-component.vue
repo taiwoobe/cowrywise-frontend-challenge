@@ -6,6 +6,9 @@
       <div class="skeleton-holder" v-else-if="photos.length <= 0 && LOADING_STATUS">
         <skeleton-component></skeleton-component>
       </div>
+      <h4 v-else-if="ERRORS && ERRORS.length !== ''" class="text-center">
+          {{ ERRORS }}
+      </h4>
       <div class="masonry">
           <transition-group name="fade">
             <div class="masonry-item" v-for="photo in photos" :key="photo.id">
@@ -20,11 +23,6 @@
             </div>
           </transition-group>
       </div>
-      <!-- <ul v-if="errors && errors.length">
-        <li v-for="error of errors" :key="error.id">
-          {{error.message}}
-        </li>
-      </ul> -->
       <photoModal :singlePhoto="selectedPhoto"></photoModal>
     </div>
 </template>
@@ -49,7 +47,7 @@ export default {
     },
     computed: {
         ...mapState(['photos']),
-        ...mapGetters(['LOADING_STATUS', 'NO_RESULT'])
+        ...mapGetters(['LOADING_STATUS', 'NO_RESULT', 'ERRORS'])
     },
     methods: {
         openSelectedPhoto(photo) {

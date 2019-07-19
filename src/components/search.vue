@@ -7,9 +7,9 @@
     <div class="search-result" v-else> 
       <transition name="fade">
         <h3 class="d-inline-block"> 
-          <p v-if="!LOADING_STATUS && NO_RESULT">No Results found for </p>
-          <p v-if="LOADING_STATUS">Searching for </p>
-          <p v-if="!LOADING_STATUS && !NO_RESULT">Search Results for </p>
+          <p v-if="!LOADING_STATUS && NO_RESULT">No Results found for</p>
+          <p v-if="LOADING_STATUS">Searching for</p>
+          <p v-if="!LOADING_STATUS && !NO_RESULT">Search Results for</p>
           &nbsp;{{ searchText }} 
         </h3>
       </transition>

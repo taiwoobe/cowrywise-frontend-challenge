@@ -24,6 +24,9 @@ export default {
   watch: {
     searchQuery: debounce(function() {
       this.$store.dispatch('searchedPhotos', this.searchQuery);
+      if (this.searchQuery == '') {
+        this.$router.push({path: `/`});
+      } else 
       this.$router.push({path: `/search/${this.searchQuery}`});
     }, 1000)
   },
