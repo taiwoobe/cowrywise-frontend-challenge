@@ -1,9 +1,9 @@
 <template>
     <div class="wrapper"> 
-      <div class="skeleton-holder" v-if="photos.length <= 0">
-        <skeleton-component></skeleton-component>
-      </div>
-      <div class="skeleton-holder" v-else-if="LOADING_STATUS">
+        <div class="no-result" v-if="NO_RESULT">
+            <img src="../assets/no_result.gif" alt="No Result Found">
+        </div>
+      <div class="skeleton-holder" v-else-if="photos.length <= 0 && LOADING_STATUS">
         <skeleton-component></skeleton-component>
       </div>
       <div class="masonry">
@@ -41,7 +41,7 @@ export default {
     data() {
         return {
             selectedPhoto: {},
-            download_url: ''
+            download_url: '',
         }
     },
     mounted() {
@@ -49,7 +49,7 @@ export default {
     },
     computed: {
         ...mapState(['photos']),
-        ...mapGetters(['LOADING_STATUS'])
+        ...mapGetters(['LOADING_STATUS', 'NO_RESULT'])
     },
     methods: {
         openSelectedPhoto(photo) {

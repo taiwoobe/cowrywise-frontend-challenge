@@ -1,17 +1,16 @@
-
-.fade-enter-active, .fade-leave-active {
-    transition: opacity 5s ease-in-out;
-    transition-delay: 0.1s;
-  }
-  .fade-enter, .fade-leave-to {
+.fade-enter-active {
+    transition: opacity 1s ease-in-out;
+}
+.fade-enter, .fade-leave-to{
     opacity: 0;
-  }
+}
 .wrapper {
     margin: 0 auto;
     max-width: 992px;
     padding: 0 1.5em;
     position: relative;
     top: -50px;
+    min-height: 500px;
     .masonry {
       column-fill: initial;
       column-gap: 25px;
@@ -74,16 +73,16 @@
         }
       }
     }
-  }
+}
   
   // MEDIA QUERIES //
-  @media only screen and (max-width: 1023px) and (min-width: 768px){
+@media only screen and (max-width: 1023px) and (min-width: 768px){
     .masonry {
       column-count: 2;
     }
-  }
-  @media only screen and (min-width: 1024px){
+}
+@media only screen and (min-width: 1024px){
     .masonry {
       column-count: 3;
     }
-  }
+}

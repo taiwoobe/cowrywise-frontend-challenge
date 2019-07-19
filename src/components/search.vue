@@ -6,35 +6,43 @@
     </div>
     <div class="search-result" v-else> 
       <transition name="fade">
-        <h3> {{ searchText }} </h3>
+        <h3 class="d-inline-block"> 
+          <p v-if="!LOADING_STATUS && NO_RESULT">No Results found for </p>
+          <p v-if="LOADING_STATUS">Searching for </p>
+          <p v-if="!LOADING_STATUS && !NO_RESULT">Search Results for </p>
+          &nbsp;{{ searchText }} 
+        </h3>
       </transition>
     </div>
   </div>
 </template>
 
 <script>
-  import { mapState } from 'vuex'
-  export default {
-    name: 'searchComponent',
-    props: [ "searchText", "searchResult"],
-    data() {
-      return {
-        searchQuery: '',
-      }
-    },
-    watch: {
-      searchQuery: function(value) {
-        this.$emit('input', value);
-      }
+import { mapGetters } from 'vuex'
+export default {
+  name: 'searchComponent',
+  props: [ "searchText"],
+  data() {
+    return {
+      searchQuery: '',
     }
+  },
+  watch: {
+    searchQuery: function(value) {
+      this.$emit('input', value);
+    }
+  },
+  computed: {
+    ...mapGetters(['LOADING_STATUS', 'NO_RESULT'])
   }
+}
 </script>
 
 <style lang="scss" scoped>
 .fade-enter-active {
-  transition: opacity 0.3s ease-in-out;
+  transition: opacity 1s ease-in-out;
 }
-.fade-enter, .fade-leave-to {
+.fade-enter, .fade-leave-to{
   opacity: 0;
 }
 .search {
@@ -73,6 +81,11 @@
       text-align: left;
       max-width: 1200px;
       width: 100%;
+      color: #6d7b91;
+      p {
+        color: #253858;
+        display: inline-block;
+      }
   }
 }
 </style>
