@@ -45,7 +45,7 @@
       bottom: 0;
       left: 0;
       transform: translateX(-100%);
-      background-image: linear-gradient(90deg, rgba(whitesmoke, 0) 0, rgba(whitesmoke, 0.2) 20%, rgba(whitesmoke, 0.5) 60%, rgba(whitesmoke, 0));
+      background-image: linear-gradient(90deg, rgba(rgb(184, 184, 184), 0) 0, rgba(whitesmoke, 0.2) 20%, rgba(whitesmoke, 0.5) 60%, rgba(rgb(184, 184, 184),  0));
       animation: shimmer 5s infinite;
       content: '';
     }
