@@ -1,19 +1,22 @@
 <template>
   <div class="search">
-    <div class="search-field" v-if="searchText == ''">
-      <font-awesome-icon icon="search" size="xs" color="rgba(65,81,109,0.8)"/>
-      <input type="text" class="form-control" placeholder="Search for Photo" v-model="searchQuery">
-    </div>
-    <div class="search-result" v-else> 
-      <transition name="fade">
+    <transition name="fade" mode="out-in">    
+      <div class="search-field" v-if="searchText == ''">
+        <font-awesome-icon icon="search" size="xs" color="rgba(65,81,109,0.8)"/>
+        <input type="text" class="form-control" placeholder="Search for Photo" v-model="searchQuery">
+      </div>
+      <div class="search-result" v-else> 
         <h3 class="d-inline-block"> 
+          <a v-on:click="goBackHome">
+            <font-awesome-icon icon="arrow-left" size="xs" color="rgba(65,81,109,0.8)"/>
+          </a>
           <p v-if="!LOADING_STATUS && NO_RESULT">No Results found for</p>
           <p v-if="LOADING_STATUS">Searching for</p>
           <p v-if="!LOADING_STATUS && !NO_RESULT">Search Results for</p>
           &nbsp;{{ searchText }} 
         </h3>
-      </transition>
-    </div>
+      </div>
+    </transition>
   </div>
 </template>
 
@@ -24,7 +27,7 @@ export default {
   props: [ "searchText"],
   data() {
     return {
-      searchQuery: '',
+      searchQuery: ''
     }
   },
   watch: {
@@ -34,7 +37,14 @@ export default {
   },
   computed: {
     ...mapGetters(['LOADING_STATUS', 'NO_RESULT'])
-  }
+  },
+  methods: {
+    goBackHome() {
+      this.searchQuery = '';
+      this.$store.state.searchString = '';
+      this.$store.state.loading = true;
+    }
+  },
 }
 </script>
 
@@ -42,9 +52,10 @@ export default {
 .fade-enter-active {
   transition: opacity 1s ease-in-out;
 }
-.fade-enter, .fade-leave-to{
-  opacity: 0;
+.fade-enter {
+  opacity: 1;
 }
+
 .search {
   min-height: 250px;
   background: #dde2e9;
@@ -85,6 +96,14 @@ export default {
       p {
         color: #253858;
         display: inline-block;
+        margin-bottom: 0;
+      }
+      a {
+        cursor: pointer;
+        margin-right: 20px;
+        &:hover {
+          cursor: pointer;
+        }
       }
   }
 }

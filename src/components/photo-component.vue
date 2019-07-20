@@ -1,6 +1,6 @@
 <template>
     <div class="wrapper"> 
-        <div class="no-result" v-if="NO_RESULT">
+        <div class="no-result" v-if="NO_RESULT && photos.length <= 0 && !LOADING_STATE">
             <img src="../assets/no_result.gif" alt="No Result Found">
         </div>
       <div class="skeleton-holder" v-else-if="photos.length <= 0 && LOADING_STATUS">
